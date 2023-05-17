@@ -1,12 +1,8 @@
-const form = document.getElementById('form-atividade');
-const imgAprovado = '<img src="./images/aprovado.png" alt="Emoji Celebrando"';
-const imgReprovado = '<img src="./images/reprovado.png" alt="Emoji decepcionado"';
-const atividades = [];
-const notas = [];
+const form = document.getElementById('form-cad-contatos');
 
-const spanAprovado = '<span class="resultado aprovado"> Aprovado</span>';
-const spanReprovado = '<span class="resultado reprovado"> Reprovado</span>';
-const notaMinima = parseFloat(prompt("Digite a nota mínima:"));
+const nomes = [];
+const telefones = [];
+
 
 
 let linhas = '';
@@ -16,51 +12,65 @@ form.addEventListener('submit', function(e){
     
     adicionaLinha();
     atualizaTabela();
-    atualizaMediaFinal();
+    atualizaTotal();
+   
+
     
 });
 
 function adicionaLinha(){
 
-    const inputNomeAtividade = document.getElementById('nome-atividade');
-    const inputNotaAtividade = document.getElementById('nota-atividade');
+    const nomePessoa = document.getElementById('nome-pessoa');
+    const telefonePessoa = document.getElementById('telefone-pessoa');
 
-    if(atividades.includes(inputNomeAtividade.value)){
-        alert(`A atividade: ${inputNomeAtividade.value} já foi inserida!`);
+    if(nomes.includes(nomePessoa.value)){
+        alert(`O contato: ${nomePessoa.value} já foi inserido!`);
+        nomePessoa.focus();
   
+    }else if(telefonePessoa.value.length < 14 ||telefonePessoa.value.length > 15 ){
+        alert(`O telefone: ${telefonePessoa.value} deve ter no mínimo 14 Caracteres e no máximo 15. \n Tamanho atual: ${telefonePessoa.value.length}`); 
+        nomePessoa.focus(); 
     }else{
-
-      atividades.push(inputNomeAtividade.value)
-   notas.push(parseFloat(inputNotaAtividade.value))
+   nomes.push(nomePessoa.value)
+   telefones.push(parseFloat(telefonePessoa.value))
 
     let linha = '<tr>';
-    linha += `<td>${inputNomeAtividade.value}</td>`;
-    linha += `<td>${inputNotaAtividade.value}</td>`;
-    linha += `<td>${inputNotaAtividade.value >= notaMinima ? imgAprovado: imgReprovado}</td>`;
+    linha += `<td>${nomePessoa.value}</td>`;
+    linha += `<td>${telefonePessoa.value}</td>`;
     linha += '</tr>';
     linhas += linha;
+
+    nomePessoa.value = '';
+    telefonePessoa.value = '';
 }
-     inputNomeAtividade.value = '';
-     inputNotaAtividade.value = '';
+   
  
 }
 function atualizaTabela(){
     const corpoTabela = document.querySelector('tbody');
     corpoTabela.innerHTML = linhas;
 }
-function atualizaMediaFinal(){
-const mediaFinal = calculaMEdiaFinal(); 
-document.getElementById('media-final-valor').innerHTML = mediaFinal.toFixed(2);
-document.getElementById('media-final-resultado').innerHTML = mediaFinal >= notaMinima ? spanAprovado:spanReprovado;
+function atualizaTotal(){
+const total = totalRegs(); 
+document.getElementById('total-registros').innerHTML ='Total de Registros: ' + total ;
 } 
 
-function calculaMEdiaFinal(){
-    let somaDasNotas = 0;
-
-    for(let i =0; i< notas.length;i++){
-    somaDasNotas += notas[i];
-    }
-
-    return media = somaDasNotas / notas.length;
+function totalRegs(){
+    
+    return telefones.length
     
 }
+
+const valida  = (event) => {
+    let input = event.target
+     input.value = mascara(input.value)
+    }
+  
+  const mascara = (value) => {
+    if (!value) return ""
+    value = value.replace(/\D/g,'')
+    value = value.replace(/(\d{2})(\d)/,"($1) $2")
+    value = value.replace(/(\d)(\d{4})$/,"$1-$2")
+    return value
+  }
+
